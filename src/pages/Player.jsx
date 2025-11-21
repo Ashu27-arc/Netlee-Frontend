@@ -25,15 +25,19 @@ export default function Player() {
     if (!movie) return "Loading...";
 
     return (
-        <div className="p-6 bg-black min-h-screen text-white">
-            <h1 className="text-3xl font-bold mb-4">{movie.title}</h1>
-
-            <video
-                ref={videoRef}
-                controls
-                className="w-full max-w-4xl"
-            >
-            </video>
+        <div className="fixed inset-0 bg-black flex flex-col">
+            <div className="flex-shrink-0 px-4 py-3 bg-black bg-opacity-90">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white truncate">{movie.title}</h1>
+            </div>
+            
+            <div className="flex-1 flex items-center justify-center bg-black">
+                <video
+                    ref={videoRef}
+                    controls
+                    className="w-full h-full object-contain"
+                >
+                </video>
+            </div>
         </div>
     );
 

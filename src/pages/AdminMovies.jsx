@@ -31,12 +31,18 @@ export default function AdminMovies() {
         <div className="flex bg-black min-h-screen text-white">
             <AdminSidebar />
 
-            <div className="ml-60 p-10 w-full">
-                <h1 className="text-3xl font-bold mb-6">Manage Movies</h1>
+            <div className="ml-48 sm:ml-60 p-4 sm:p-6 md:p-8 lg:p-10 w-full">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 sm:mb-6 lg:mb-8">Manage Movies</h1>
 
-                {movies.map((m) => (
-                    <AdminMovieRow key={m._id} movie={m} onDelete={deleteMovie} />
-                ))}
+                <div className="max-w-5xl">
+                    {movies.length === 0 ? (
+                        <p className="text-gray-400 text-sm sm:text-base">No movies uploaded yet.</p>
+                    ) : (
+                        movies.map((m) => (
+                            <AdminMovieRow key={m._id} movie={m} onDelete={deleteMovie} />
+                        ))
+                    )}
+                </div>
             </div>
         </div>
     );
