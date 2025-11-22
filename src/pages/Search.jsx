@@ -7,17 +7,27 @@ export default function Search() {
     const [query, setQuery] = useState("");
     const [results, setResults] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [error, setError] = useState("");
 
     const handleSearch = async (e) => {
         e.preventDefault();
-        if (!query.trim()) return;
+        if (!query.trim()) {
+            setError("Please enter a search query");
+            return;
+        }
 
         setLoading(true);
+        setError("");
         try {
-            const res = await API.get(`/movies/search?q=${query}`);
-            setResults(res.data);
+            const res = await API.get(`/movies/search?q=${encodeURIComponent(query.trim())}`);
+            setResults(res.data || []);
+            if (res.data && res.data.length === 0) {
+                setError(`No results found for "${query}"`);
+            }
         } catch (err) {
             console.error("Search error:", err);
+            setError(err.response?.data?.message || "Search failed. Please try again.");
+            setResults([]);
         } finally {
             setLoading(false);
         }
@@ -49,10 +59,24 @@ export default function Search() {
                 </form>
 
                 {loading && (
-                    <div className="text-white text-center text-lg sm:text-xl">Searching...</div>
+                    <div className="text-white text-center text-lg sm:text-xl py-8">
+                        <div className="flex items-center justify-center gap-3">
+                            <svg className="animate-spin h-6 w-6" fill="none" viewBox="0 0 24 24">
+                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Searching...
+                        </div>
+                    </div>
                 )}
 
-                {!loading && results.length > 0 && (
+                {error && !loading && (
+                    <div className="bg-red-600/20 border border-red-600 rounded-lg p-4 text-red-400 text-center">
+                        {error}
+                    </div>
+                )}
+
+                {!loading && !error && results.length > 0 && (
                     <div>
                         <h2 className="text-white text-xl sm:text-2xl lg:text-3xl font-bold mb-4 lg:mb-6">
                             Results ({results.length})
@@ -65,8 +89,8 @@ export default function Search() {
                     </div>
                 )}
 
-                {!loading && query && results.length === 0 && (
-                    <div className="text-white text-center text-lg sm:text-xl">
+                {!loading && !error && query && results.length === 0 && (
+                    <div className="text-white text-center text-lg sm:text-xl py-8">
                         No results found for "{query}"
                     </div>
                 )}

@@ -18,9 +18,23 @@ export default function Home() {
         const fetchAllMovies = async () => {
             try {
                 const { data } = await API.get("/movies/home");
-                setData(data);
+                setData(data || {
+                    local: [],
+                    trending: [],
+                    popular: [],
+                    topRated: [],
+                    upcoming: []
+                });
             } catch (err) {
                 console.error("Error fetching movies:", err);
+                // Set empty data on error to prevent crashes
+                setData({
+                    local: [],
+                    trending: [],
+                    popular: [],
+                    topRated: [],
+                    upcoming: []
+                });
             } finally {
                 setLoading(false);
             }
@@ -29,7 +43,18 @@ export default function Home() {
         fetchAllMovies();
     }, []);
 
-    const heroMovie = useMemo(() => data.trending[0], [data.trending]);
+    const heroMovie = useMemo(() => {
+        if (data.trending && data.trending.length > 0) {
+            return data.trending[0];
+        }
+        if (data.popular && data.popular.length > 0) {
+            return data.popular[0];
+        }
+        if (data.local && data.local.length > 0) {
+            return data.local[0];
+        }
+        return null;
+    }, [data.trending, data.popular, data.local]);
 
     if (loading) {
         return (
@@ -48,7 +73,7 @@ export default function Home() {
             <Hero movie={heroMovie} />
 
             {/* Movie Rows */}
-            <div className="relative -mt-20 sm:-mt-28 md:-mt-32 lg:-mt-36 z-10 pb-2">
+            <div className="relative -mt-20 sm:-mt-28 md:-mt-32 lg:-mt-36 z-10 pb-8">
                 {data.local && data.local.length > 0 && (
                     <MovieRow title="Your Uploaded Movies" movies={data.local} />
                 )}

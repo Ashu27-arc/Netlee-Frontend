@@ -9,6 +9,11 @@ export default function TMDBMoviePlayer() {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        if (!id) {
+            setLoading(false);
+            return;
+        }
+
         API.get(`/movies/tmdb/${id}`)
             .then((res) => {
                 setMovie(res.data);
