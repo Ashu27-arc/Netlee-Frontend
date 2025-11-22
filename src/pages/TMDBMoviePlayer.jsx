@@ -41,7 +41,11 @@ export default function TMDBMoviePlayer() {
         );
     }
 
-    const trailerVideo = movie.videos?.results?.find(
+    // Check for full movie video URL first (from database)
+    const hasFullMovie = movie.fullMovieUrl || movie.fullMovieHlsUrl || movie.hasFullMovie;
+    
+    // Fallback to trailer if no full movie
+    const trailerVideo = !hasFullMovie && movie.videos?.results?.find(
         (v) => v.type === "Trailer" && v.site === "YouTube"
     );
 
@@ -54,20 +58,41 @@ export default function TMDBMoviePlayer() {
             {/* Back Button - Floating */}
             <button
                 onClick={() => navigate(-1)}
-                className="absolute top-4 left-4 z-20 px-4 py-2 bg-black bg-opacity-70 hover:bg-opacity-90 text-white rounded-lg text-sm transition-all backdrop-blur-sm"
+                className="absolute top-4 left-4 z-20 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold shadow-lg transition-all duration-200 flex items-center gap-2"
             >
-                ← Back
+                <span className="text-lg">←</span>
+                <span>Back</span>
             </button>
 
             {/* Video Player - Absolute Full Screen */}
-            {trailerVideo ? (
-                <iframe
+            {hasFullMovie ? (
+                <video
                     className="absolute inset-0 w-full h-full"
-                    src={`https://www.youtube.com/embed/${trailerVideo.key}?autoplay=1`}
-                    title={movie.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                ></iframe>
+                    controls
+                    autoPlay
+                    controlsList="nodownload"
+                >
+                    {movie.fullMovieHlsUrl && (
+                        <source src={movie.fullMovieHlsUrl} type="application/x-mpegURL" />
+                    )}
+                    {movie.fullMovieUrl && (
+                        <source src={movie.fullMovieUrl} type="video/mp4" />
+                    )}
+                    Your browser does not support the video tag.
+                </video>
+            ) : trailerVideo ? (
+                <div className="absolute inset-0 w-full h-full">
+                    <iframe
+                        className="w-full h-full"
+                        src={`https://www.youtube.com/embed/${trailerVideo.key}?autoplay=1`}
+                        title={movie.title}
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                    ></iframe>
+                    <div className="absolute top-20 left-4 right-4 bg-yellow-600 text-white px-4 py-2 rounded-lg text-sm">
+                        ⚠️ Full movie not available. Playing trailer instead.
+                    </div>
+                </div>
             ) : backdropUrl ? (
                 <div className="absolute inset-0 w-full h-full flex items-center justify-center">
                     <img
@@ -75,13 +100,15 @@ export default function TMDBMoviePlayer() {
                         alt={movie.title}
                         className="w-full h-full object-cover"
                     />
-                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                        <p className="text-white text-xl">Trailer not available</p>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-70">
+                        <p className="text-white text-2xl mb-4">🎬 Movie not available</p>
+                        <p className="text-gray-300 text-sm">This movie hasn't been uploaded yet</p>
                     </div>
                 </div>
             ) : (
-                <div className="absolute inset-0 w-full h-full flex items-center justify-center">
-                    <p className="text-white text-xl">No video available</p>
+                <div className="absolute inset-0 w-full h-full flex flex-col items-center justify-center">
+                    <p className="text-white text-2xl mb-4">🎬 Movie not available</p>
+                    <p className="text-gray-300 text-sm">This movie hasn't been uploaded yet</p>
                 </div>
             )}
 

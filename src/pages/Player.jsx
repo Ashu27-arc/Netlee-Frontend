@@ -103,7 +103,7 @@ export default function Player() {
                 <div className="text-white text-xl mb-4 text-center">{error || "Movie not found"}</div>
                 <button
                     onClick={() => navigate(-1)}
-                    className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                    className="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold shadow-lg transition-all duration-200"
                 >
                     Go Back
                 </button>
@@ -112,28 +112,36 @@ export default function Player() {
     }
 
     return (
-        <div className="fixed inset-0 bg-black flex flex-col">
-            <div className="flex-shrink-0 px-4 py-3 bg-black bg-opacity-90 flex items-center justify-between">
-                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-white truncate flex-1">
-                    {movie.title}
-                </h1>
-                <button
-                    onClick={() => navigate(-1)}
-                    className="ml-4 px-4 py-2 bg-gray-800 hover:bg-gray-700 text-white rounded-lg transition-colors"
-                >
-                    ← Back
-                </button>
-            </div>
-            
-            <div className="flex-1 flex items-center justify-center bg-black">
-                <video
-                    ref={videoRef}
-                    controls
-                    autoPlay
-                    className="w-full h-full object-contain"
-                >
-                    Your browser does not support the video tag.
-                </video>
+        <div className="fixed inset-0 bg-black">
+            {/* Back Button - Floating */}
+            <button
+                onClick={() => navigate(-1)}
+                className="absolute top-4 left-4 z-20 px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold shadow-lg transition-all duration-200 flex items-center gap-2"
+            >
+                <span className="text-lg">←</span>
+                <span>Back</span>
+            </button>
+
+            {/* Video Player - Full Screen */}
+            <video
+                ref={videoRef}
+                controls
+                autoPlay
+                className="absolute inset-0 w-full h-full"
+            >
+                Your browser does not support the video tag.
+            </video>
+
+            {/* Movie Info Overlay - Bottom */}
+            <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/95 to-transparent px-6 py-4 opacity-0 hover:opacity-100 transition-opacity duration-300">
+                <div className="text-white max-w-7xl mx-auto">
+                    <h1 className="text-2xl font-bold">{movie.title}</h1>
+                    {movie.description && (
+                        <p className="text-sm text-gray-300 mt-2 line-clamp-2">
+                            {movie.description}
+                        </p>
+                    )}
+                </div>
             </div>
         </div>
     );

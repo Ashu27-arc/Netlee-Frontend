@@ -8,6 +8,7 @@ import { AuthProvider } from "./context/AuthContext";
 import AdminMovies from "./pages/AdminMovies";
 import TMDBMoviePlayer from "./pages/TMDBMoviePlayer";
 import Search from "./pages/Search";
+import AdminUsers from "./pages/AdminUsers";
 
 export default function App() {
   return (
@@ -29,8 +30,8 @@ export default function App() {
 
           {/* Admin */}
           <Route path="/admin/upload" element={<AdminUpload />} />
-
           <Route path="/admin/movies" element={<AdminMovies />} />
+          <Route path="/admin/users" element={<AdminUsers />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

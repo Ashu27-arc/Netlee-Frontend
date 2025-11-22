@@ -12,6 +12,9 @@ export default function AdminSidebar() {
                 <Link className="block hover:text-red-500 transition text-sm sm:text-base" to="/admin/movies">
                     Manage Movies
                 </Link>
+                <Link className="block hover:text-red-500 transition text-sm sm:text-base" to="/admin/users">
+                    Manage Users
+                </Link>
             </nav>
         </div>
     );

@@ -37,51 +37,63 @@ export default function Search() {
         <div className="bg-black min-h-screen">
             <Navbar />
 
-            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-24 lg:pt-28 pb-8">
-                <h1 className="text-white text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 lg:mb-10">Search Movies</h1>
+            <div className="container mx-auto px-4 sm:px-6 lg:px-8 pt-24 sm:pt-28 lg:pt-32 pb-12">
+                <div className="max-w-4xl mx-auto mb-10 sm:mb-12">
+                    <h1 className="text-white text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black mb-3 sm:mb-4 text-center">
+                        🔍 Search Movies
+                    </h1>
+                    <p className="text-gray-400 text-center text-sm sm:text-base md:text-lg">
+                        Discover thousands of movies from TMDB
+                    </p>
+                </div>
 
-                <form onSubmit={handleSearch} className="mb-6 sm:mb-8 lg:mb-10 max-w-xl">
-                    <div className="flex gap-2">
+                <form onSubmit={handleSearch} className="mb-8 sm:mb-10 lg:mb-12 max-w-3xl mx-auto">
+                    <div className="relative">
                         <input
                             type="text"
                             value={query}
                             onChange={(e) => setQuery(e.target.value)}
-                            placeholder="Search for movies..."
-                            className="flex-1 px-4 py-2.5 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:border-red-600 text-sm"
+                            placeholder="Search for movies, actors, directors..."
+                            className="w-full px-6 py-4 sm:py-5 pr-32 rounded-2xl bg-gray-900/80 backdrop-blur-sm text-white border-2 border-gray-800 focus:outline-none focus:border-red-600 text-base sm:text-lg placeholder-gray-500 shadow-2xl"
                         />
                         <button
                             type="submit"
-                            className="px-5 py-2.5 bg-red-600 text-white font-semibold rounded-lg hover:bg-red-700 transition text-sm whitespace-nowrap"
+                            disabled={loading}
+                            className="absolute right-2 top-1/2 -translate-y-1/2 px-6 sm:px-8 py-3 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-red-600/50 flex items-center justify-center gap-2"
                         >
-                            Search
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                            <span className="hidden sm:inline">Search</span>
                         </button>
                     </div>
                 </form>
 
                 {loading && (
-                    <div className="text-white text-center text-lg sm:text-xl py-8">
-                        <div className="flex items-center justify-center gap-3">
-                            <svg className="animate-spin h-6 w-6" fill="none" viewBox="0 0 24 24">
-                                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                            </svg>
-                            Searching...
-                        </div>
+                    <div className="flex flex-col items-center justify-center py-20">
+                        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-red-600 mb-4"></div>
+                        <p className="text-white text-xl font-semibold">Searching...</p>
                     </div>
                 )}
 
                 {error && !loading && (
-                    <div className="bg-red-600/20 border border-red-600 rounded-lg p-4 text-red-400 text-center">
-                        {error}
+                    <div className="max-w-2xl mx-auto bg-red-600/20 border-2 border-red-600/50 rounded-2xl p-6 text-center backdrop-blur-sm">
+                        <svg className="w-16 h-16 text-red-500 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p className="text-red-400 text-lg font-semibold">{error}</p>
                     </div>
                 )}
 
                 {!loading && !error && results.length > 0 && (
-                    <div>
-                        <h2 className="text-white text-xl sm:text-2xl lg:text-3xl font-bold mb-4 lg:mb-6">
-                            Results ({results.length})
-                        </h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 2xl:grid-cols-7 gap-3 sm:gap-4 lg:gap-5">
+                    <div className="fade-in">
+                        <div className="flex items-center gap-3 mb-6 sm:mb-8">
+                            <span className="w-1.5 h-10 bg-red-600 rounded-full"></span>
+                            <h2 className="text-white text-2xl sm:text-3xl lg:text-4xl font-bold">
+                                Results <span className="text-red-600">({results.length})</span>
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-5 lg:gap-6">
                             {results.map((movie) => (
                                 <MovieCard key={movie.id} movie={movie} local={false} />
                             ))}
@@ -89,9 +101,13 @@ export default function Search() {
                     </div>
                 )}
 
-                {!loading && !error && query && results.length === 0 && (
-                    <div className="text-white text-center text-lg sm:text-xl py-8">
-                        No results found for "{query}"
+                {!loading && !error && !query && (
+                    <div className="flex flex-col items-center justify-center py-20 text-center">
+                        <svg className="w-24 h-24 text-gray-700 mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                        </svg>
+                        <p className="text-gray-400 text-xl mb-2">Start searching for movies</p>
+                        <p className="text-gray-600 text-sm">Enter a movie name above to get started</p>
                     </div>
                 )}
             </div>
