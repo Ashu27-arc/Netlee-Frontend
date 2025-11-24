@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const API = axios.create({
-    baseURL: "http://192.168.1.12:5000/api",
+    baseURL: "https://netlee-backend.onrender.com/api",
     timeout: 10000,
     headers: {
         'Content-Type': 'application/json',
